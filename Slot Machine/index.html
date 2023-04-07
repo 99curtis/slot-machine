@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simple Slot Machine</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
@@ -30,20 +30,36 @@
             </thead>
             <tbody>
               <tr>
-                <td>Three 9s</td>
-                <td id="jackpot">Jackpot (500)</td>
+                <td>77777</td>
+                <td>1:1000</td>
               </tr>
               <tr>
-                <td>3 x 7 (not first two)</td>
-                <td id="payout_7_not_first_two"></td>
+                <td>7777X</td>
+                <td>1:100</td>
               </tr>
               <tr>
-                <td>1 x 7</td>
-                <td id="payout_1_7"></td>
+                <td>777XX</td>
+                <td>1:50</td>
               </tr>
               <tr>
-                <td>2 equal numbers (not 7)</td>
-                <td id="payout_2_equal"></td>
+                <td>77XXX</td>
+                <td>1:20</td>
+              </tr>
+              <tr>
+                <td>7XXXX</td>
+                <td>1:5</td>
+              </tr>
+              <tr>
+                <td>XXX (consecutive)</td>
+                <td>1:10</td>
+              </tr>
+              <tr>
+                <td>XX (consecutive)</td>
+                <td>1:5</td>
+              </tr>
+              <tr>
+                <td>XX (adjacent)</td>
+                <td>1:2</td>
               </tr>
             </tbody>
           </table>
@@ -53,15 +69,17 @@
           <div class="slot" id="slot1"><span class="slot-inner">0</span></div>
           <div class="slot" id="slot2"><span class="slot-inner">0</span></div>
           <div class="slot" id="slot3"><span class="slot-inner">0</span></div>
+          <div class="slot" id="slot4"><span class="slot-inner">0</span></div>
+          <div class="slot" id="slot5"><span class="slot-inner">0</span></div>
         </div>
         <div class="bet">
           <p>Select a bet amount:</p>
           <div class="bet-buttons">
-            <button id="bet1">$1</button>
-            <button id="bet2">$2</button>
-            <button id="bet3">$3</button>
-            <button id="bet4">$4</button>
-            <button id="bet5">$5</button>
+            <button id="bet1">$0.08</button>
+            <button id="bet2">$0.16</button>
+            <button id="bet3">$0.24</button>
+            <button id="bet4">$0.32</button>
+            <button id="bet5">$0.40</button>
           </div>
           <button id="spin">Spin</button>
           <p>Match the numbers on the reels to win. The more matching numbers, the higher the payout.</p>
@@ -76,3 +94,4 @@
   <script src="script.js"></script>
 </body>
 </html>
+

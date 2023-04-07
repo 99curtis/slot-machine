@@ -75,6 +75,8 @@ aside {
   justify-content: center;
   overflow: hidden;
   position: relative;
+  font-size: 3rem;
+  line-height: 1;
 }
 
 .slot-inner {
@@ -86,11 +88,10 @@ aside {
   align-items: center;
   justify-content: center;
   transform: translateY(-50%);
-  font-size: 3rem;
+  font-size: 2rem;
   line-height: 1;
   height: 100%;
 }
-
 
 .bet {
   display: flex;
@@ -147,10 +148,6 @@ caption {
 @media screen and (max-width: 600px) {
   .slot {
     height: 70px;
-  }
-
-  .slot-inner {
     font-size: 2rem;
   }
 }
-
