@@ -145,6 +145,15 @@ caption {
   margin-bottom: 10px;
 }
 
+.win-border {
+  border-color: limegreen;
+}
+
+.lose-border {
+  border-color: red;
+}
+
+
 @media screen and (max-width: 600px) {
   .slot {
     height: 70px;

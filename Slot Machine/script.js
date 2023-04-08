@@ -5,6 +5,8 @@ const slots = document.querySelectorAll('.slot');
 const spinBtn = document.getElementById('spin');
 const betButtons = document.querySelectorAll('.bet-buttons button');
 const resultMessage = document.getElementById('resultMessage');
+const spinHistory = document.getElementById('spinHistory');
+
 
 let balance = 0;
 let spinning = false;
@@ -25,10 +27,12 @@ betButtons.forEach((button, index) => {
 
 spinBtn.addEventListener('click', async () => {
   if (spinning || selectedBet === null) return;
+  
 
   if (selectedBet > balance) {
     alert("You don't have enough balance.");
     return;
+    
   }
 
   balance -= selectedBet;
@@ -50,6 +54,7 @@ spinBtn.addEventListener('click', async () => {
   } else {
     resultMessage.textContent = `Sorry, you didn't win this time.`;
   }
+  updateSpinHistory(results);
 });
 
 addMoneyBtn.addEventListener('click', () => {
@@ -69,7 +74,7 @@ async function spinSlots(results) {
 
     for (let j = 0; j < 10; j++) {
       slot.textContent = (j % 9) + 1;
-      slot.style.backgroundColor = '';
+      slot.classList.remove('win-border', 'lose-border');
       await sleep(100);
     }
 
@@ -77,77 +82,83 @@ async function spinSlots(results) {
   }
 }
 
-function highlightResults(results) {
-  const winIndices = [];
-  const loseIndices = [];
 
-  // Code to determine winning and losing indices
+function highlightResults(results) {
+  const winIndices = calculateWinIndices(results);
+  const loseIndices = calculateLoseIndices(results, winIndices);
 
   winIndices.forEach(index => {
-    slots[index].style.backgroundColor = 'limegreen';
+    slots[index].classList.add('win-border');
   });
   loseIndices.forEach(index => {
-    slots[index].style.backgroundColor = 'red';
+    slots[index].classList.add('lose-border');
   });
+}
+
+function calculateWinIndices(results) {
+  const winIndices = [];
+
+  for (let i = 0; i < results.length - 1; i++) {
+    if (results[i] === results[i + 1]) {
+      if (!winIndices.includes(i)) {
+        winIndices.push(i);
+      }
+      winIndices.push(i + 1);
+    }
+  }
+
+  return winIndices;
+}
+
+function calculateLoseIndices(results, winIndices) {
+  const loseIndices = [];
+
+  for (let i = 0; i < results.length; i++) {
+    if (!winIndices.includes(i)) {
+      loseIndices.push(i);
+    }
+  }
+
+  return loseIndices;
+}
+
+function updateSpinHistory(spin) {
+  const spinText = spin.join('-');
+  const listItem = document.createElement('li');
+  listItem.textContent = spinText;
+
+  if (spinHistory.childElementCount >= 10) {
+    spinHistory.removeChild(spinHistory.lastChild);
+  }
+
+  spinHistory.insertBefore(listItem, spinHistory.firstChild);
+}
+
+function calculatePayout(results) {
+  const winIndices = calculateWinIndices(results);
+  const winCount = winIndices.length;
+
+  if (winCount >= 5 && results.every(num => num === 7)) {
+    return selectedBet * 1000;
+  } else if (winCount >= 4 && results.slice(0, 4).every(num => num === 7)) {
+    return selectedBet * 100;
+  } else if (winCount >= 3 && results.slice(0, 3).every(num => num === 7)) {
+    return selectedBet * 50;
+  } else if (winCount >= 2 && results.slice(0, 2).every(num => num === 7)) {
+    return selectedBet * 20;
+  } else if (winCount === 1 && results[0] === 7) {
+    return selectedBet * 5;
+  } else if (winCount >= 3 && results.slice(0, 3).every((num, idx) => num === results[idx + 1])) {
+    return selectedBet * 10;
+  } else if (winCount >= 2 && results.slice(0, 2).every((num, idx) => num === results[idx + 1])) {
+    return selectedBet * 5;
+  } else if (winCount >= 2) {
+    return selectedBet * 2;
+  } else {
+    return 0;
+  }
 }
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-function calculatePayout(results) {
-  const winIndices = [];
-  const loseIndices = [];
-
-  if (results.every(num => num === 7)) {
-    winIndices.push(0, 1, 2, 3, 4);
-  } else if (results.slice(0, 4).every(num => num === 7)) {
-    winIndices.push(0, 1, 2, 3);
-    loseIndices.push(4);
-  } else if (results.slice(0, 3).every(num => num === 7)) {
-    winIndices.push(0, 1, 2);
-    loseIndices.push(3, 4);
-  } else if (results.slice(0, 2).every(num => num === 7)) {
-    winIndices.push(0, 1);
-    loseIndices.push(2, 3, 4);
-  } else if (results[0] === 7) {
-    winIndices.push(0);
-    loseIndices.push(1, 2, 3, 4);
-  } else {
-    for (let i = 0; i < 4; i++) {
-      if (results[i] === results[i + 1]) {
-        winIndices.push(i, i + 1);
-      } else {
-        loseIndices.push(i);
-      }
-    }
-    loseIndices.push(4);
-  }
-
-  winIndices.forEach(index => {
-    slots[index].style.backgroundColor = 'limegreen';
-  });
-  loseIndices.forEach(index => {
-    slots[index].style.backgroundColor = 'red';
-  });
-
-  if (results.every(num => num === 7)) {
-    return selectedBet * 1000;
-  } else if (results.slice(0, 4).every(num => num === 7)) {
-    return selectedBet * 100;
-  } else if (results.slice(0, 3).every(num => num === 7)) {
-    return selectedBet * 50;
-  } else if (results.slice(0, 2).every(num => num === 7)) {
-    return selectedBet * 20;
-  } else if (results[0] === 7) {
-    return selectedBet * 5;
-  } else if (results.slice(0, 3).every((num, idx) => num === results[idx + 1])) {
-    return selectedBet * 10;
-  } else if (results.slice(0, 2).every((num, idx) => num === results[idx + 1])) {
-    return selectedBet * 5;
-  } else if (results[0] === results[1] || results[1] === results[2] || results[2] === results[3] || results[3] === results[4]) {
-    return selectedBet * 2;
-  } else {
-    return 0;
-    }
 }
